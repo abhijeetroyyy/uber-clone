@@ -1,7 +1,5 @@
 # Uber Clone
 
-// ...existing code...
-
 ## Documentation
 
 ### Backend
@@ -32,5 +30,5 @@ DB_URI=your_database_uri
 JWT_SECRET=your_jwt_secret
 ```
 
-// ...existing code...
+
 
