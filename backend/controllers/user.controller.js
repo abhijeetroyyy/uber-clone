@@ -1,5 +1,5 @@
 const userModel = require("../models/user.model");
-const userService = require("../services/user.service");
+const userService = require("../services/user.service"); // Optional: Custom user service
 const { validationResult } = require("express-validator");
 
 module.exports.registerUser = async (req, res, next) => {
@@ -12,21 +12,34 @@ module.exports.registerUser = async (req, res, next) => {
     const { fullname, email, password } = req.body;
     const { firstname, lastname } = fullname;
 
-    const hashedPassword = await userModel.hashPassword(password);
-    const user = await userService.createUser({
-      firstname,
-      lastname,
+    // Check if the user already exists
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already registered with this email" });
+    }
+
+    // Create a new user
+    const user = await userModel.create({
+      fullname: { firstname, lastname },
       email,
-      password: hashedPassword,
+      password: password.trim(),
     });
 
+    // Generate an authentication token
     const token = user.generateAuthToken();
-    res.status(201).json({ user, token });
+
+    // Return response with the user data and token
+    const userData = {
+      _id: user._id,
+      fullname: user.fullname,
+      email: user.email,
+    };
+    res.status(201).json({ user: userData, token });
   } catch (error) {
+    console.error("Error during user registration:", error.message);
     next(error);
   }
 };
-
 
 module.exports.loginUser = async (req, res, next) => {
   try {
@@ -35,40 +48,37 @@ module.exports.loginUser = async (req, res, next) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    let { email, password } = req.body;
+    const { email, password } = req.body;
 
-    // Log the incoming email and password for debugging (trimmed)
-    console.log("Login attempt with email:", email);
-    console.log("Trimmed password input:", password.trim());
-
-    // Check if user exists
+    // Find the user by email and include the password explicitly
     const user = await userModel.findOne({ email }).select("+password");
     if (!user) {
-      console.error("User not found for email:", email);
+      console.log(`User not found for email: ${email}`);
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Log the retrieved user for debugging
-    console.log("Retrieved user:", user);
-
-    // Trim password to avoid whitespace issues
-    password = password.trim();
-
-    // Validate password
-    const isValidPassword = await user.comparePassword(password);
+    // Compare passwords
+    console.log(`Comparing password for user: ${email}`);
+    console.log(`Plain password: ${password.trim()}`);
+    console.log(`Hashed password: ${user.password}`);
+    const isValidPassword = await user.comparePassword(password.trim());
     if (!isValidPassword) {
-      console.error("Password validation failed for email:", email);
+      console.log(`Password comparison failed for user: ${email}`);
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
     // Generate JWT token
     const token = user.generateAuthToken();
-    console.log("JWT token generated for user:", user._id);
 
-    // Return success response
-    res.status(200).json({ user, token });
+    // Return user details (excluding sensitive data) and token
+    const userData = {
+      _id: user._id,
+      fullname: user.fullname,
+      email: user.email,
+    };
+    res.status(200).json({ user: userData, token });
   } catch (error) {
-    console.error("Error in loginUser:", error);
+    console.error("Error during login:", error.message);
     next(error);
   }
 };
