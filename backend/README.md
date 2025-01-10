@@ -1,6 +1,6 @@
 # Uber Clone Backend
 
-This is the backend for the Uber clone project. It includes user registration and login functionalities.
+This is the backend for the Uber clone project. It includes user registration, login, and logout functionalities.
 
 ## Getting Started
 
@@ -51,7 +51,7 @@ The request body should be a JSON object containing the following fields:
 
 - `fullname`: An object containing:
   - `firstname`: The user's first name (required, minimum 3 characters).
-  - `lastname`: The user's last name (required, minimum 2 characters).
+  - `lastname`: The user's last name (required, minimum 3 characters).
 - `email`: The user's email address (required, must be a valid email).
 - `password`: The user's password (required, minimum 8 characters).
 
@@ -80,8 +80,7 @@ Example:
         "firstname": "John",
         "lastname": "Doe"
       },
-      "email": "john.doe@example.com",
-      "socketId": null
+      "email": "john.doe@example.com"
     },
     "token": "jwt_token"
   }
@@ -186,6 +185,87 @@ Example:
   }
   ```
 
+### User Profile Endpoint
+
+#### Endpoint: `/users/profile`
+
+#### Method: GET
+
+#### Description
+This endpoint is used to get the profile of the authenticated user. It requires a valid JWT token.
+
+#### Responses
+
+##### Success
+- **Status Code: 200 OK**
+- **Body:**
+  ```json
+  {
+    "_id": "user_id",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.doe@example.com"
+  }
+  ```
+
+##### Authentication Errors
+- **Status Code: 401 Unauthorized**
+- **Body:**
+  ```json
+  {
+    "message": "Unauthorized"
+  }
+  ```
+
+##### Server Errors
+- **Status Code: 500 Internal Server Error**
+- **Body:**
+  ```json
+  {
+    "error": "Internal Server Error"
+  }
+  ```
+
+### User Logout Endpoint
+
+#### Endpoint: `/users/logout`
+
+#### Method: GET
+
+#### Description
+This endpoint is used to log out the authenticated user. It requires a valid JWT token.
+
+#### Responses
+
+##### Success
+- **Status Code: 200 OK**
+- **Body:**
+  ```json
+  {
+    "message": "Logged out successfully"
+  }
+  ```
+
+##### Authentication Errors
+- **Status Code: 401 Unauthorized**
+- **Body:**
+  ```json
+  {
+    "message": "Unauthorized"
+  }
+  ```
+
+##### Server Errors
+- **Status Code: 500 Internal Server Error**
+- **Body:**
+  ```json
+  {
+    "error": "Internal Server Error"
+  }
+  ```
+
 ## Project Structure
 
 ```
@@ -194,8 +274,11 @@ backend/
 │   └── user.controller.js
 ├── db/
 │   └── db.js
+├── middleware/
+│   └── auth.middleware.js
 ├── models/
-│   └── user.model.js
+│   ├── user.model.js
+│   └── blacklistToken.model.js
 ├── routes/
 │   └── user.routes.js
 ├── services/
@@ -211,3 +294,5 @@ backend/
 1. Register a new user by sending a POST request to `/users/register` with the required fields.
 2. Log in with an existing user by sending a POST request to `/users/login` with the email and password.
 3. Use the returned JWT token for authenticated requests.
+4. Get the user profile by sending a GET request to `/users/profile` with the JWT token.
+5. Log out the user by sending a GET request to `/users/logout` with the JWT token.

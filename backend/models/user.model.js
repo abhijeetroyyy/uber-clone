@@ -53,7 +53,7 @@ userSchema.methods.generateAuthToken = function () {
   return jwt.sign(
     { _id: this._id },
     process.env.JWT_SECRET, // Use secure secrets in production
-    { expiresIn: "1h" }
+    { expiresIn: "24h" }
   );
 };
 
