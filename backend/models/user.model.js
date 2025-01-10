@@ -23,40 +23,46 @@ const userSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
     trim: true,
-    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})$/, "Invalid email address"],
+    match: [
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})$/,
+      "Please provide a valid email address",
+    ],
   },
   password: {
     type: String,
     required: [true, "Password is required"],
     minlength: [8, "Password must be at least 8 characters long"],
-    select: false,
+    select: false, // Prevent password from being returned by default
   },
   socketId: {
     type: String,
+    default: null,
   },
 });
 
-userSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
-  return token;
-};
-
-userSchema.methods.comparePassword = async function (password) {
-  const isMatch = await bcrypt.compare(password, this.password);
-  return isMatch;
-};
-
-// Define the static method correctly
+// Static method to hash a password
 userSchema.statics.hashPassword = async function (password) {
-  const hashedPassword = await bcrypt.hash(password, 10);
-  return hashedPassword;
+  return await bcrypt.hash(password, 10);
 };
 
+// Method to generate a JWT token
+userSchema.methods.generateAuthToken = function () {
+  return jwt.sign(
+    { _id: this._id },
+    process.env.JWT_SECRET, // Use secure secrets in production
+    { expiresIn: "1h" }
+  );
+};
+
+// Method to compare a plain-text password with the hashed password
+userSchema.methods.comparePassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
+// Pre-save middleware to hash password before saving to the database
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 10);
+    this.password = await mongoose.model("users").hashPassword(this.password);
   }
   next();
 });
