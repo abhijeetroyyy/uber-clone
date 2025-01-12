@@ -14,7 +14,7 @@ This is the backend for the Uber clone project. It includes user and captain reg
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/uber-clone.git
+   git clone https://github.com/abhijeetroyyy/uber-clone.git
    cd uber-clone/backend
    ```
 

@@ -24,7 +24,7 @@ The UserSignup page allows new users to create an account by providing their fir
 The CaptainLogin page allows existing captains (drivers) to log in with their email and password.
 
 ### CaptainSignup
-The CaptainSignup page allows new captains (drivers) to create an account by providing their first name, last name, email, and password.
+The CaptainSignup page allows new captains (drivers) to create an account by providing their first name, last name, email, password, and vehicle information.
 
 ## Technologies Used
 
@@ -45,7 +45,7 @@ To get started with the project, follow these steps:
 
 1. Clone the repository:
     ```sh
-    git clone <repository-url>
+    git clone https://github.com/abhijeetroyyy/uber-clone.git
     ```
 
 2. Navigate to the project directory:
