@@ -200,6 +200,176 @@ Example:
   }
   ```
 
+### Captain Login Endpoint
+
+#### Endpoint: `/captains/login`
+
+#### Method: POST
+
+#### Description
+This endpoint is used to log in an existing captain. It requires the captain's email and password.
+
+#### Request Body
+The request body should be a JSON object containing the following fields:
+
+- `email`: The captain's email address (required, must be a valid email).
+- `password`: The captain's password (required, minimum 8 characters).
+
+Example:
+```json
+{
+  "email": "jane.doe@example.com",
+  "password": "Password123"
+}
+```
+
+#### Responses
+
+##### Success
+- **Status Code: 200 OK**
+- **Body:**
+  ```json
+  {
+    "captain": {
+      "_id": "captain_id",
+      "fullname": {
+        "firstname": "Jane",
+        "lastname": "Doe"
+      },
+      "email": "jane.doe@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "XYZ123",
+        "capacity": 4,
+        "VehicleType": "car"
+      }
+    },
+    "token": "jwt_token"
+  }
+  ```
+
+##### Validation Errors
+- **Status Code: 400 Bad Request**
+- **Body:**
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Error message",
+        "param": "field_name",
+        "location": "body"
+      }
+    ]
+  }
+  ```
+
+##### Authentication Errors
+- **Status Code: 401 Unauthorized**
+- **Body:**
+  ```json
+  {
+    "message": "Invalid email or password"
+  }
+  ```
+
+##### Server Errors
+- **Status Code: 500 Internal Server Error**
+- **Body:**
+  ```json
+  {
+    "error": "Internal Server Error"
+  }
+  ```
+
+### Captain Profile Endpoint
+
+#### Endpoint: `/captains/profile`
+
+#### Method: GET
+
+#### Description
+This endpoint is used to get the profile of the authenticated captain. It requires a valid JWT token.
+
+#### Responses
+
+##### Success
+- **Status Code: 200 OK**
+- **Body:**
+  ```json
+  {
+    "captain": {
+      "_id": "captain_id",
+      "fullname": {
+        "firstname": "Jane",
+        "lastname": "Doe"
+      },
+      "email": "jane.doe@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "XYZ123",
+        "capacity": 4,
+        "VehicleType": "car"
+      }
+    }
+  }
+  ```
+
+##### Authentication Errors
+- **Status Code: 401 Unauthorized**
+- **Body:**
+  ```json
+  {
+    "message": "Unauthorized"
+  }
+  ```
+
+##### Server Errors
+- **Status Code: 500 Internal Server Error**
+- **Body:**
+  ```json
+  {
+    "error": "Internal Server Error"
+  }
+  ```
+
+### Captain Logout Endpoint
+
+#### Endpoint: `/captains/logout`
+
+#### Method: POST
+
+#### Description
+This endpoint is used to log out the authenticated captain. It requires a valid JWT token.
+
+#### Responses
+
+##### Success
+- **Status Code: 200 OK**
+- **Body:**
+  ```json
+  {
+    "message": "Logout successful"
+  }
+  ```
+
+##### Authentication Errors
+- **Status Code: 401 Unauthorized**
+- **Body:**
+  ```json
+  {
+    "message": "Unauthorized"
+  }
+  ```
+
+##### Server Errors
+- **Status Code: 500 Internal Server Error**
+- **Body:**
+  ```json
+  {
+    "error": "Internal Server Error"
+  }
+  ```
+
 ### User Login Endpoint
 
 #### Endpoint: `/users/login`
@@ -388,6 +558,9 @@ backend/
 1. Register a new user by sending a POST request to `/users/register` with the required fields.
 2. Register a new captain by sending a POST request to `/captains/register` with the required fields.
 3. Log in with an existing user by sending a POST request to `/users/login` with the email and password.
-4. Use the returned JWT token for authenticated requests.
-5. Get the user profile by sending a GET request to `/users/profile` with the JWT token.
-6. Log out the user by sending a GET request to `/users/logout` with the JWT token.
+4. Log in with an existing captain by sending a POST request to `/captains/login` with the email and password.
+5. Use the returned JWT token for authenticated requests.
+6. Get the user profile by sending a GET request to `/users/profile` with the JWT token.
+7. Get the captain profile by sending a GET request to `/captains/profile` with the JWT token.
+8. Log out the user by sending a GET request to `/users/logout` with the JWT token.
+9. Log out the captain by sending a POST request to `/captains/logout` with the JWT token.
