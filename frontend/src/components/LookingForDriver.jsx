@@ -1,12 +1,12 @@
 import React from 'react'
 
-const ConfirmedRide = (props) => {
+const LookingForDriver = (props) => {
   return (
     <div>
       <h2 onClick={() => {
-        props.setConfirmedRidePannel(false)
+        props.setVehicleFound(false)
       }} className='text-right text-3xl'><i className=" ri-arrow-down-s-line"></i></h2>
-      <h2 className='text-2xl font-semibold mb-5'>Confirm your Ride</h2>
+      <h2 className='text-2xl font-semibold mb-5'>Looking your Ride</h2>
       <div className='flex gap-2 justify-between items-center p-3 flex-col'>
         <img className='h-25' src="https://www.pngplay.com/wp-content/uploads/8/Uber-PNG-Photos.png" alt="" />
         <div className='w-full mt-5'>
@@ -32,14 +32,10 @@ const ConfirmedRide = (props) => {
           </div>
 
         </div>
-        <button onClick={()=>{
-          props.setVehicleFound(true)
-          props.setConfirmedRidePannel(false)
-        }} className='w-full mt-5 bg-green-600 text-white font-semibold rounded-lg p-2'>  Confirm</button>
       </div>
 
     </div>
   )
 }
 
-export default ConfirmedRide
+export default LookingForDriver
