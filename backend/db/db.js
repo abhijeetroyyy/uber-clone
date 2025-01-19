@@ -9,7 +9,7 @@ async function connectToDb() {
         console.log("Connected to the database successfully");
     } catch (err) {
         console.error("Error connecting to the database: ", err.message);
-        process.exit(1); // Exit the process with failure
+        process.exit(1); 
     }
 }
 
